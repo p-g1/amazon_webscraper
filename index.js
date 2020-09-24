@@ -3,12 +3,12 @@ const puppeteer = require('puppeteer');
 const $ = require('cheerio');
 const CronJob = require('cron').CronJob;
 const nodemailer = require('nodemailer');
-const { sendPass } = require('./config/config');
 
 const link = config.url;
 
 async function configureBrowser() {
-    const browser = await puppeteer.launch();
+    //launch args only needed for heroku deployment. Also had to add build pack in heroku settings
+    const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
     const page = await browser.newPage();
 
     await page.goto(link);
@@ -50,7 +50,7 @@ async function startTracking() {
             service: 'gmail',
             secure: false,
             auth: {
-                user: config.sendUSer,
+                user: config.sendUser,
                 pass: config.sendPass
             }
         });
