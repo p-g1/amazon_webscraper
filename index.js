@@ -5,7 +5,7 @@ const CronJob = require('cron').CronJob;
 const nodemailer = require('nodemailer');
 const { sendPass } = require('./config/config');
 
-const link = url;
+const link = config.url;
 
 async function configureBrowser() {
     const browser = await puppeteer.launch();
@@ -25,7 +25,7 @@ async function checkPrice(page) {
         let poundPrice = $(this).text();
         let currentPrice = Number(poundPrice.replace(/[^0-9.-]+/g,""));
         
-        if (currentPrice < price) {
+        if (currentPrice < config.price) {
             console.log('BUY ' + currentPrice);
             sendNotification(currentPrice);
         }
@@ -50,8 +50,8 @@ async function startTracking() {
             service: 'gmail',
             secure: false,
             auth: {
-                user: sendUSer,
-                pass: sendPass
+                user: config.sendUSer,
+                pass: config.sendPass
             }
         });
 
@@ -60,7 +60,7 @@ async function startTracking() {
 
         let info = await transporter.sendMail({
             from: `"Price Tracker"`,
-            to: receiver,
+            to: config.receiver,
             subject: 'Price dropped to ' + price,
             text: textToSend,
             html: htmlText
